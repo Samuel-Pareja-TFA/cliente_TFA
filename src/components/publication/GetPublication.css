@@ -1,0 +1,44 @@
+.publication-card {
+  background-color: #242424;
+  border-radius: 8px;
+  padding: 0.8rem;
+  margin-bottom: 0.8rem;
+}
+
+.publication-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.4rem;
+}
+
+.publication-author {
+  background: none;
+  border: none;
+  color: #61dafb;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.publication-date {
+  font-size: 0.8rem;
+  opacity: 0.7;
+}
+
+.publication-text {
+  margin: 0.4rem 0;
+}
+
+.publication-footer {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.publication-delete-button {
+  background-color: #b00020;
+  color: #fff;
+  border: none;
+  padding: 0.3rem 0.6rem;
+  border-radius: 4px;
+  cursor: pointer;
+}

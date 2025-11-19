@@ -1,0 +1,19 @@
+/* Estilos específicos para la cabecera.
+   Muchas clases ya están definidas en globals.css, así que esto
+   solo complementa o deja preparado por si quieres retocar. */
+
+.app-header {
+  /* aquí podrías sobreescribir algo si quisieras */
+}
+
+.app-header__brand {
+  /* estilos adicionales opcionales */
+}
+
+.app-header__nav {
+  /* estilos adicionales opcionales */
+}
+
+.app-header__user {
+  /* estilos adicionales opcionales */
+}
