@@ -29,3 +29,16 @@ export function updateUsernameRequest(userId, newUsername, token) {
     body: JSON.stringify({ username: newUsername })
   });
 }
+
+/**
+ * Obtiene los datos de un usuario a partir de su username público.
+ *
+ * Llama a: GET /api/v1/users/by-username/{username}
+ *
+ * @param {string} username Nombre de usuario (nickname)
+ * @returns {Promise<{userId:number, username:string, email:string, description?:string, createDate:string}>}
+ */
+export function getUserByUsernameRequest(username) {
+  // Reutilizamos la función existente para no duplicar lógica
+  return fetchUserByUsername(username);
+}
