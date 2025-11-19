@@ -1,0 +1,15 @@
+.pagination-controls {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.8rem;
+  margin-top: 1rem;
+}
+
+.pagination-button {
+  padding: 0.3rem 0.7rem;
+}
+
+.pagination-info {
+  font-size: 0.9rem;
+}

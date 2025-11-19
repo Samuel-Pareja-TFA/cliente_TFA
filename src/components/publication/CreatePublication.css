@@ -1,0 +1,37 @@
+.create-publication-card {
+  background-color: #1e1e1e;
+  border-radius: 8px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+}
+
+.create-publication-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.create-publication-textarea {
+  width: 100%;
+  min-height: 80px;
+  resize: vertical;
+}
+
+.create-publication-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.create-publication-button {
+  padding: 0.4rem 0.8rem;
+}
+
+.char-counter {
+  font-size: 0.85rem;
+  opacity: 0.7;
+}
+
+.error-message {
+  color: red;
+}
