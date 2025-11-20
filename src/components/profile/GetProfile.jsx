@@ -4,6 +4,41 @@ import GetPublication from '../publication/GetPublication.jsx';
 import './GetProfile.css';
 
 /**
+ * Normaliza y ordena las publicaciones de un usuario.
+ *
+ * @param {Array<any>} publications Lista de publicaciones en diversos formatos
+ * @returns {Array<{
+ *  id: number,
+ *  userId: number,
+ *  username: string,
+ *  text: string,
+ *  createDate: string
+ * }>}
+ */
+function normalizePublications(publications) {
+  if (!Array.isArray(publications)) return [];
+
+  return publications
+    .map((pub) => {
+      const id = pub.id ?? pub.publicationId ?? 0;
+      const userId =
+        pub.user?.id ?? pub.userId ?? pub.authorId ?? 0;
+      const username =
+        pub.user?.username ?? pub.username ?? pub.authorName ?? 'desconocido';
+      const text = pub.text ?? pub.content ?? '';
+      const createDate = pub.createDate ?? pub.createdAt ?? '';
+
+      return { id, userId, username, text, createDate };
+    })
+    .filter((p) => p.id !== 0)
+    .sort((a, b) => {
+      const da = new Date(a.createDate).getTime();
+      const db = new Date(b.createDate).getTime();
+      return db - da;
+    });
+}
+
+/**
  * Card de perfil de usuario con sus publicaciones.
  *
  * @param {{
@@ -11,8 +46,10 @@ import './GetProfile.css';
  *  email: string,
  *  description?: string,
  *  createDate: string,
- *  publications: any[]
- * }} props Datos del usuario y sus publicaciones
+ *  publications: any[],
+ *  followersCount?: number,
+ *  followingCount?: number
+ * }} props
  * @returns {JSX.Element}
  */
 function GetProfile({
@@ -20,65 +57,73 @@ function GetProfile({
   email,
   description,
   createDate,
-  publications
+  publications,
+  followersCount,
+  followingCount
 }) {
-  // Normalizamos las publicaciones para que funcionen tanto si vienen con
-  // pub.user.id / pub.user.username como con pub.userId / pub.username / pub.authorName
-  const normalizedPublications = (publications || []).map((pub) => {
-    const authorId =
-      pub.user?.id ?? pub.userId ?? pub.authorId ?? null;
-    const authorName =
-      pub.user?.username ??
-      pub.username ??
-      pub.authorName ??
-      username; // como último recurso, el username del perfil
+  const normalizedPublications = normalizePublications(publications);
 
-    return {
-      id: pub.id,
-      authorId,
-      authorName,
-      text: pub.text,
-      createDate: pub.createDate
-    };
-  });
-
-  // Ordenamos de más reciente a más antiguo, como pide el profe
-  const sortedPublications = [...normalizedPublications].sort(
-    (a, b) => new Date(b.createDate) - new Date(a.createDate)
-  );
-
-  return (
-    <div className="profile-card">
-      <header className="profile-header">
+    return (
+    <article className="profile-card">
+      <header className="profile-card__header">
         <h2>@{username}</h2>
-        <p className="profile-email">{email}</p>
-        {description && <p className="profile-description">{description}</p>}
-        <p className="profile-date">
-          Miembro desde:{' '}
-          {new Date(createDate).toLocaleDateString()}
-        </p>
+        <p className="profile-card__email">{email}</p>
+
+        {/* Bloque de seguidores/seguidos en columnas:
+             número arriba, texto abajo */}
+        {typeof followersCount === 'number' &&
+          typeof followingCount === 'number' && (
+            <div className="profile-card__stats">
+              <div className="profile-card__stat">
+                <span className="profile-card__stat-number">
+                  {followersCount}
+                </span>
+                <span className="profile-card__stat-label">
+                  seguidores
+                </span>
+              </div>
+              <div className="profile-card__stat">
+                <span className="profile-card__stat-number">
+                  {followingCount}
+                </span>
+                <span className="profile-card__stat-label">
+                  seguidos
+                </span>
+              </div>
+            </div>
+          )}
       </header>
 
-      <section className="profile-publications">
-        <h3>Publicaciones</h3>
-        {sortedPublications.length === 0 && (
-          <p className="profile-no-publications">
-            Este usuario todavía no ha publicado nada.
-          </p>
-        )}
+      {description && (
+        <p className="profile-card__description">{description}</p>
+      )}
 
-        {sortedPublications.map((pub) => (
-          <GetPublication
-            key={pub.id}
-            id={pub.id}
-            authorId={pub.authorId ?? 0}
-            authorName={pub.authorName ?? 'desconocido'}
-            text={pub.text}
-            createDate={pub.createDate}
-          />
-        ))}
+      {createDate && (
+        <p className="profile-card__date">
+          Miembro desde: {new Date(createDate).toLocaleDateString()}
+        </p>
+      )}
+
+      <section className="profile-card__publications">
+        <h3>Publicaciones</h3>
+        {normalizedPublications.length === 0 ? (
+          <p>Este usuario todavía no tiene publicaciones.</p>
+        ) : (
+          <div className="publications-list">
+            {normalizedPublications.map((pub) => (
+              <GetPublication
+                key={pub.id}
+                id={pub.id}
+                authorId={pub.userId}
+                authorName={pub.username}
+                text={pub.text}
+                createDate={pub.createDate}
+              />
+            ))}
+          </div>
+        )}
       </section>
-    </div>
+    </article>
   );
 }
 
@@ -87,11 +132,9 @@ GetProfile.propTypes = {
   email: PropTypes.string.isRequired,
   description: PropTypes.string,
   createDate: PropTypes.string.isRequired,
-  publications: PropTypes.arrayOf(PropTypes.any).isRequired
-};
-
-GetProfile.defaultProps = {
-  description: ''
+  publications: PropTypes.arrayOf(PropTypes.any).isRequired,
+  followersCount: PropTypes.number,
+  followingCount: PropTypes.number
 };
 
 export default GetProfile;

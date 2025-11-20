@@ -316,8 +316,8 @@ body {
   flex-direction: column;
   gap: 0.75rem;
   margin-top: 1rem;
-  max-width: 320px;       /* ancho máximo del bloque */
-  margin: 0 auto 1rem;    /* centrado horizontal + margen abajo */
+  max-width: 320px;       
+  margin: 0 auto 1rem;    
 }
 
 .profile-update-form input {
@@ -328,3 +328,4 @@ body {
   color: #e5e7eb;
   text-align: center;
 }
+
