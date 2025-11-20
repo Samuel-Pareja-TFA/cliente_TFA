@@ -18,12 +18,16 @@ export function AppHeader() {
       </div>
 
       {user && (
-        <nav className="app-header__center">
-          <NavLink to="/" end>
-            Timeline
-          </NavLink>
-          <NavLink to="/all">Todos</NavLink>
-          <NavLink to="/me">Mi perfil</NavLink>
+        <nav className="app-header__nav">
+          <div className="app-header__nav-item">
+            <NavLink to="/">Timeline</NavLink>
+          </div>
+          <div className="app-header__nav-item">
+            <NavLink to="/all">Todos</NavLink>
+          </div>
+          <div className="app-header__nav-item">
+            <NavLink to="/me">Mi perfil</NavLink>
+          </div>
         </nav>
       )}
 
