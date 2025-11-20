@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import { useAuth } from '../hooks/useAuth.js';
 import { usePagination } from '../hooks/usePagination.js';
-import { updateUsernameRequest } from '../api/commands/users.js';
+import { updateUsernameRequest, getFollowersCountRequest, getFollowingCountRequest } from '../api/commands/users.js';
 import GetProfile from '../components/profile/GetProfile.jsx';
 import PaginationControls from '../components/ui/PaginationControls.jsx';
 
@@ -19,6 +19,35 @@ function MyProfilePage() {
   const { user, ensureValidAccessToken } = useAuth();
   const [newUsername, setNewUsername] = useState(user?.username ?? '');
   const [localUser, setLocalUser] = useState(user);
+
+  // Número de seguidores del usuario logueado
+  const { data: followersCountData } = useQuery({
+    queryKey: ['followersCount', user?.userId],
+    enabled: !!user,
+    queryFn: async () => {
+      const token = await ensureValidAccessToken();
+      if (!token) {
+        throw new Error('No hay token válido para obtener seguidores');
+      }
+      return getFollowersCountRequest(user.userId, token);
+    }
+  });
+
+  // Número de seguidos del usuario logueado
+  const { data: followingCountData } = useQuery({
+    queryKey: ['followingCount', user?.userId],
+    enabled: !!user,
+    queryFn: async () => {
+      const token = await ensureValidAccessToken();
+      if (!token) {
+        throw new Error('No hay token válido para obtener seguidos');
+      }
+      return getFollowingCountRequest(user.userId, token);
+    }
+  });
+
+  const followersCount = followersCountData ?? 0;
+  const followingCount = followingCountData ?? 0;
 
   const {
     page,
@@ -75,6 +104,9 @@ function MyProfilePage() {
           description={localUser.description}
           createDate={localUser.createDate}
           publications={publications}
+          // nuevo: contadores de seguidores/seguidos
+          followersCount={followersCount}
+          followingCount={followingCount}
         />
       )}
 

@@ -23,3 +23,31 @@
 .profile-no-publications {
   opacity: 0.8;
 }
+
+/* Contenedor de las dos columnas (seguidores / seguidos) */
+.profile-card__stats {
+  display: flex;
+  justify-content: center;
+  gap: 3rem;            
+  margin-top: 0.75rem;
+}
+
+/* Cada columna: número arriba, texto abajo */
+.profile-card__stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Número (0, 12, 34...) */
+.profile-card__stat-number {
+  font-size: 1.2rem;
+  font-weight: 600;
+}
+
+/* Texto "seguidores" / "seguidos" */
+.profile-card__stat-label {
+  font-size: 0.8rem;
+  color: #9ca3af;
+}
+

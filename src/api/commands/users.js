@@ -42,3 +42,41 @@ export function getUserByUsernameRequest(username) {
   // Reutilizamos la función existente para no duplicar lógica
   return fetchUserByUsername(username);
 }
+
+/**
+ * Obtiene el número total de seguidores (followers) de un usuario.
+ *
+ * Llama a: GET /api/v1/users/{userId}/followers?page=0&size=1
+ *
+ * @param {number} userId ID del usuario
+ * @param {string} token JWT de acceso del usuario logueado
+ * @returns {Promise<number>} Número total de seguidores
+ */
+export async function getFollowersCountRequest(userId, token) {
+  const page = await apiFetch(`/api/v1/users/${userId}/followers?page=0&size=1`, {
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  });
+
+  return page.totalElements ?? 0;
+}
+
+/**
+ * Obtiene el número total de seguidos (following) de un usuario.
+ *
+ * Llama a: GET /api/v1/users/{userId}/following?page=0&size=1
+ *
+ * @param {number} userId ID del usuario
+ * @param {string} token JWT de acceso del usuario logueado
+ * @returns {Promise<number>} Número total de seguidos
+ */
+export async function getFollowingCountRequest(userId, token) {
+  const page = await apiFetch(`/api/v1/users/${userId}/following?page=0&size=1`, {
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  });
+
+  return page.totalElements ?? 0;
+}
