@@ -5,6 +5,7 @@ import { usePagination } from '../hooks/usePagination.js';
 import { updateUsernameRequest, getFollowersCountRequest, getFollowingCountRequest } from '../api/commands/users.js';
 import GetProfile from '../components/profile/GetProfile.jsx';
 import PaginationControls from '../components/ui/PaginationControls.jsx';
+import { Link } from 'react-router-dom';
 
 /**
  * Página del perfil del usuario logueado.

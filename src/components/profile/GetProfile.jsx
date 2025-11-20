@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import GetPublication from '../publication/GetPublication.jsx';
 import './GetProfile.css';
+import { Link } from 'react-router-dom';
 
 /**
  * Normaliza y ordena las publicaciones de un usuario.
@@ -74,22 +75,29 @@ function GetProfile({
         {typeof followersCount === 'number' &&
           typeof followingCount === 'number' && (
             <div className="profile-card__stats">
-              <div className="profile-card__stat">
+              <Link
+                to="/me/followers"
+                className="profile-card__stat profile-card__stat--link"
+              >
                 <span className="profile-card__stat-number">
                   {followersCount}
                 </span>
                 <span className="profile-card__stat-label">
                   seguidores
                 </span>
-              </div>
-              <div className="profile-card__stat">
+              </Link>
+
+              <Link
+                to="/me/following"
+                className="profile-card__stat profile-card__stat--link"
+              >
                 <span className="profile-card__stat-number">
                   {followingCount}
                 </span>
                 <span className="profile-card__stat-label">
                   seguidos
                 </span>
-              </div>
+              </Link>
             </div>
           )}
       </header>
