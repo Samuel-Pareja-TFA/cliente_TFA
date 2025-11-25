@@ -333,6 +333,53 @@ body {
 
 
 
+/* -------------------------------- */
+/* Lista de seguidores / seguidos centrada y en columna */
+.followers-list {
+  list-style: none;           
+  padding: 0;
+  margin: 1.5rem auto;        
+  max-width: 520px;           
+}
+
+/* Cada seguidor/seguido como una "card" */
+.followers-list__item {
+  position: relative;
+  display: flex;
+  align-items: center; 
+  justify-content: center;
+  gap: 2.5rem;                
+  padding: 0.6rem 0.9rem 0.6rem 1.6rem; 
+  margin-bottom: 0.6rem;
+  background-color: #020617;  
+  border-radius: 0.75rem;
+  border: 1px solid #1e293b;
+}
+
+/* Bullet manual controlado, cerca del texto */
+.followers-list__item::before {
+  content: '•';
+  margin-left: 6rem;
+  position: absolute;
+  left: 0.7rem;
+  font-size: 1.1rem;
+  color: #22c55e;             
+}
+
+/* Nombre de usuario */
+.followers-list__username {
+  font-weight: 600;
+  color: #e5e7eb;
+}
+
+/* Email con un poco de separación visual */
+.followers-list__email {
+  font-size: 0.9rem;
+  color: #9ca3af;
+}
+
+
+
 
 
 

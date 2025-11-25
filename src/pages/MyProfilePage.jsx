@@ -105,9 +105,10 @@ function MyProfilePage() {
           description={localUser.description}
           createDate={localUser.createDate}
           publications={publications}
-          // nuevo: contadores de seguidores/seguidos
           followersCount={followersCount}
           followingCount={followingCount}
+          followersLinkTo="/me/followers"
+          followingLinkTo="/me/following"
         />
       )}
 

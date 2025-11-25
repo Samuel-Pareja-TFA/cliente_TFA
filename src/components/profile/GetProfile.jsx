@@ -50,6 +50,8 @@ function normalizePublications(publications) {
  *  publications: any[],
  *  followersCount?: number,
  *  followingCount?: number
+ *  followersLinkTo?: string,
+ *  followingLinkTo?: string
  * }} props
  * @returns {JSX.Element}
  */
@@ -60,23 +62,27 @@ function GetProfile({
   createDate,
   publications,
   followersCount,
-  followingCount
+  followingCount,
+  followersLinkTo,
+  followingLinkTo
 }) {
   const normalizedPublications = normalizePublications(publications);
 
-    return (
+      return (
     <article className="profile-card">
       <header className="profile-card__header">
         <h2>@{username}</h2>
         <p className="profile-card__email">{email}</p>
 
         {/* Bloque de seguidores/seguidos en columnas:
-             número arriba, texto abajo */}
+             número arriba, texto abajo, textos clicables */}
         {typeof followersCount === 'number' &&
-          typeof followingCount === 'number' && (
+          typeof followingCount === 'number' &&
+          followersLinkTo &&
+          followingLinkTo && (
             <div className="profile-card__stats">
               <Link
-                to="/me/followers"
+                to={followersLinkTo}
                 className="profile-card__stat profile-card__stat--link"
               >
                 <span className="profile-card__stat-number">
@@ -88,7 +94,7 @@ function GetProfile({
               </Link>
 
               <Link
-                to="/me/following"
+                to={followingLinkTo}
                 className="profile-card__stat profile-card__stat--link"
               >
                 <span className="profile-card__stat-number">
@@ -142,7 +148,9 @@ GetProfile.propTypes = {
   createDate: PropTypes.string.isRequired,
   publications: PropTypes.arrayOf(PropTypes.any).isRequired,
   followersCount: PropTypes.number,
-  followingCount: PropTypes.number
+  followingCount: PropTypes.number,
+  followersLinkTo: PropTypes.string,
+  followingLinkTo: PropTypes.string
 };
 
 export default GetProfile;

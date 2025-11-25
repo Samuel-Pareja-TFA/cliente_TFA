@@ -15,10 +15,6 @@ import PaginationControls from '../components/ui/PaginationControls.jsx';
 function MyFollowersPage() {
   const { user, ensureValidAccessToken } = useAuth();
 
-  if (!user) {
-    return <p>Debes iniciar sesión para ver tus seguidores.</p>;
-  }
-
   const {
     page,
     items: followers,
@@ -28,10 +24,17 @@ function MyFollowersPage() {
     error,
     nextPage,
     prevPage
-  } = usePagination(`/api/v1/users/${user.userId}/followers`, {
-    enabled: !!user,
-    getToken: ensureValidAccessToken
-  });
+  } = usePagination(
+    user ? `/api/v1/users/${user.userId}/followers` : '',
+    {
+      enabled: !!user,
+      getToken: ensureValidAccessToken
+    }
+  );
+
+  if (!user) {
+    return <p>Debes iniciar sesión para ver tus seguidores.</p>;
+  }
 
   return (
     <div className="page-container">

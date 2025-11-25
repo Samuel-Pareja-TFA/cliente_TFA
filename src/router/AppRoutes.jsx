@@ -11,6 +11,8 @@ import LoginPage from '../pages/Auth/LoginPage.jsx';
 import RegisterPage from '../pages/Auth/RegisterPage.jsx';
 import MyFollowersPage from '../pages/MyFollowersPage.jsx';
 import MyFollowingPage from '../pages/MyFollowingPage.jsx';
+import UserFollowersPage from '../pages/UserFollowersPage.jsx';
+import UserFollowingPage from '../pages/UserFollowingPage.jsx';
 
 /**
  * Ruta protegida: solo permite el acceso si hay usuario autenticado.
@@ -90,6 +92,25 @@ export function AppRoutes() {
           </PrivateRoute>
         }
       />
+
+      <Route
+        path="/profile/:name/followers"
+        element={
+          <PrivateRoute>
+            <UserFollowersPage />
+          </PrivateRoute>
+        }
+      />
+
+      <Route
+        path="/profile/:name/following"
+        element={
+          <PrivateRoute>
+            <UserFollowingPage />
+          </PrivateRoute>
+        }
+      />
+
       <Route
         path="/profile/:name"
         element={
