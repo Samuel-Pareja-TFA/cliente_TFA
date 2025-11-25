@@ -5,18 +5,26 @@ import { getUserByUsernameRequest } from '../api/commands/users.js';
 import { usePagination } from '../hooks/usePagination.js';
 import GetProfile from '../components/profile/GetProfile.jsx';
 import PaginationControls from '../components/ui/PaginationControls.jsx';
+import { useAuth } from '../hooks/useAuth.js';
+import { getFollowersCountRequest, getFollowingCountRequest } from '../api/commands/users.js';
 
 /**
  * Página de perfil público de un usuario por su username.
  *
  * Ruta: "/profile/:name"
  *
+ * Muestra los datos del usuario (username, email, descripción, fecha)
+ * y todas sus publicaciones, ordenadas de más nuevas a más antiguas.
+ *
+ * Además, muestra el número de seguidores y seguidos, igual que en "/me".
+ *
  * @returns {JSX.Element}
  */
 function UserProfilePage() {
   const { name } = useParams();
+  const { ensureValidAccessToken } = useAuth();
 
-  // 1) Cargar los datos del usuario a partir del username
+  // 1) Datos del usuario por username
   const {
     data: profileUser,
     isLoading: isLoadingUser,
@@ -27,37 +35,73 @@ function UserProfilePage() {
     queryFn: () => getUserByUsernameRequest(name)
   });
 
-  // 2) Cuando ya sabemos el userId, cargamos sus publicaciones paginadas
+  // 2) Paginación de publicaciones de ese usuario
+  const userId = profileUser?.userId ?? profileUser?.id ?? null;
+
   const {
     page,
     items: publications,
     totalPages,
-    isLoading: isLoadingPubs,
-    isError: isErrorPubs,
-    error: pubsError,
+    isLoading,
+    isError,
+    error,
     nextPage,
     prevPage
   } = usePagination(
-    profileUser ? `/api/v1/publications/user/${profileUser.userId}` : '',
+    userId ? `/api/v1/publications/user/${userId}` : '',
     {
-      enabled: !!profileUser // SOLO se ejecuta cuando profileUser ya existe
+      enabled: !!userId
     }
   );
 
-  if (isLoadingUser) {
-    return <p>Cargando perfil...</p>;
-  }
+  // 3) Contadores de seguidores / seguidos para este usuario
+  const { data: followersCountData } = useQuery({
+    queryKey: ['followersCountProfile', userId],
+    enabled: !!userId,
+    queryFn: async () => {
+      const token = await ensureValidAccessToken();
+      if (!token) {
+        throw new Error('No hay token válido para obtener seguidores');
+      }
+      return getFollowersCountRequest(userId, token);
+    }
+  });
 
-  if (isErrorUser) {
+  const { data: followingCountData } = useQuery({
+    queryKey: ['followingCountProfile', userId],
+    enabled: !!userId,
+    queryFn: async () => {
+      const token = await ensureValidAccessToken();
+      if (!token) {
+        throw new Error('No hay token válido para obtener seguidos');
+      }
+      return getFollowingCountRequest(userId, token);
+    }
+  });
+
+  const followersCount = followersCountData ?? 0;
+  const followingCount = followingCountData ?? 0;
+
+  if (isLoadingUser) {
     return (
-      <p className="error-message">
-        {userError?.body?.message || userError?.message || 'Error al cargar el perfil'}
-      </p>
+      <div className="page-container">
+        <h1>Perfil de usuario</h1>
+        <p>Cargando usuario...</p>
+      </div>
     );
   }
 
-  if (!profileUser) {
-    return <p className="error-message">Usuario no encontrado.</p>;
+  if (isErrorUser || !profileUser) {
+    return (
+      <div className="page-container">
+        <h1>Perfil de usuario</h1>
+        <p className="error-message">
+          {userError?.body?.message ||
+            userError?.message ||
+            'No se ha podido cargar el usuario.'}
+        </p>
+      </div>
+    );
   }
 
   return (
@@ -70,16 +114,22 @@ function UserProfilePage() {
         description={profileUser.description}
         createDate={profileUser.createDate}
         publications={publications}
+        followersCount={followersCount}
+        followingCount={followingCount}
+        followersLinkTo={`/profile/${profileUser.username}/followers`}
+        followingLinkTo={`/profile/${profileUser.username}/following`}
       />
 
-      {isLoadingPubs && <p>Cargando publicaciones...</p>}
-      {isErrorPubs && (
+      {isLoading && <p>Cargando publicaciones...</p>}
+      {isError && (
         <p className="error-message">
-          {pubsError?.body?.message || pubsError?.message || 'Error al cargar las publicaciones'}
+          {error?.body?.message ||
+            error?.message ||
+            'Error al cargar publicaciones del usuario'}
         </p>
       )}
 
-      {!isLoadingPubs && !isErrorPubs && (
+      {!isLoading && !isError && (
         <PaginationControls
           page={page}
           totalPages={totalPages}
