@@ -1,6 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
+import { useForm } from 'react-hook-form';
 import { useAuth } from '../../hooks/useAuth.js';
+
 
 /**
  * Página de registro de usuario.
@@ -8,14 +10,21 @@ import { useAuth } from '../../hooks/useAuth.js';
  * @returns {JSX.Element}
  */
 function RegisterPage() {
-  const { register, loading, error, user } = useAuth();
+  const { register: registerUser, loading, error, user } = useAuth();
   const navigate = useNavigate();
 
-  const [form, setForm] = useState({
-    username: '',
-    email: '',
-    password: '',
-    description: ''
+  // React Hook Form para gestionar el formulario de registro
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting }
+  } = useForm({
+    defaultValues: {
+      username: '',
+      email: '',
+      password: '',
+      description: ''
+    }
   });
 
   useEffect(() => {
@@ -24,18 +33,9 @@ function RegisterPage() {
     }
   }, [user, navigate]);
 
-  const handleChange = (event) => {
-    const { name, value } = event.target;
-    setForm((prev) => ({
-      ...prev,
-      [name]: value
-    }));
-  };
-
-  const handleSubmit = async (event) => {
-    event.preventDefault();
+  const onSubmit = async (data) => {
     try {
-      await register(form);
+      await registerUser(data);
       navigate('/');
     } catch {
       // error ya gestionado en el contexto
@@ -45,52 +45,76 @@ function RegisterPage() {
   return (
     <div className="page-container auth-page">
       <h1>Registro</h1>
-      <form onSubmit={handleSubmit} className="auth-form">
+      <form onSubmit={handleSubmit(onSubmit)} className="auth-form">
         <label htmlFor="username">
           Usuario
           <input
             id="username"
-            name="username"
             type="text"
-            value={form.username}
-            onChange={handleChange}
-            required
+            {...register('username', {
+              required: 'El usuario es obligatorio',
+              minLength: {
+                value: 3,
+                message: 'El usuario debe tener al menos 3 caracteres'
+              }
+            })}
           />
         </label>
+        {errors.username && (
+          <p className="error-message">{errors.username.message}</p>
+        )}
 
         <label htmlFor="email">
           Email
           <input
             id="email"
-            name="email"
             type="email"
-            value={form.email}
-            onChange={handleChange}
-            required
+            {...register('email', {
+              required: 'El email es obligatorio',
+              pattern: {
+                value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                message: 'El email no tiene un formato válido'
+              }
+            })}
           />
         </label>
+        {errors.email && (
+          <p className="error-message">{errors.email.message}</p>
+        )}
 
         <label htmlFor="password">
           Contraseña
           <input
             id="password"
-            name="password"
             type="password"
-            value={form.password}
-            onChange={handleChange}
-            required
+            {...register('password', {
+              required: 'La contraseña es obligatoria',
+              minLength: {
+                value: 6,
+                message: 'La contraseña debe tener al menos 6 caracteres'
+              }
+            })}
           />
         </label>
+        {errors.password && (
+          <p className="error-message">{errors.password.message}</p>
+        )}
 
         <label htmlFor="description">
           Descripción (opcional)
           <textarea
             id="description"
-            name="description"
-            value={form.description}
-            onChange={handleChange}
+            {...register('description', {
+              maxLength: {
+                value: 280,
+                message: 'La descripción no puede superar los 280 caracteres'
+              }
+            })}
           />
         </label>
+        {errors.description && (
+          <p className="error-message">{errors.description.message}</p>
+        )}
 
         {error && (
           <p className="error-message">
@@ -98,8 +122,8 @@ function RegisterPage() {
           </p>
         )}
 
-        <button type="submit" disabled={loading}>
-          {loading ? 'Registrando...' : 'Registrarse'}
+        <button type="submit" disabled={loading || isSubmitting}>
+          {loading || isSubmitting ? 'Registrando...' : 'Registrarse'}
         </button>
       </form>
 

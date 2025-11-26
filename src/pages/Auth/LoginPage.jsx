@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
+import { useForm } from 'react-hook-form';
 import { useAuth } from '../../hooks/useAuth.js';
 
 /**
@@ -11,9 +12,16 @@ function LoginPage() {
   const { login, loading, error, user } = useAuth();
   const navigate = useNavigate();
 
-  const [form, setForm] = useState({
-    username: '',
-    password: ''
+  // React Hook Form para gestionar el formulario de login
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting }
+  } = useForm({
+    defaultValues: {
+      username: '',
+      password: ''
+    }
   });
 
   useEffect(() => {
@@ -22,20 +30,11 @@ function LoginPage() {
     }
   }, [user, navigate]);
 
-  const handleChange = (event) => {
-    const { name, value } = event.target;
-    setForm((prev) => ({
-      ...prev,
-      [name]: value
-    }));
-  };
-
-  const handleSubmit = async (event) => {
-    event.preventDefault();
+  const onSubmit = async (data) => {
     try {
       await login({
-        username: form.username,
-        password: form.password
+        username: data.username,
+        password: data.password
       });
       navigate('/');
     } catch {
@@ -46,30 +45,39 @@ function LoginPage() {
   return (
     <div className="page-container auth-page">
       <h1>Iniciar sesión</h1>
-      <form onSubmit={handleSubmit} className="auth-form">
+      <form onSubmit={handleSubmit(onSubmit)} className="auth-form">
         <label htmlFor="username">
           Usuario
           <input
             id="username"
-            name="username"
             type="text"
-            value={form.username}
-            onChange={handleChange}
-            required
+            // name lo dejamos por semántica, pero React Hook Form usa el de register
+            {...register('username', {
+              required: 'El usuario es obligatorio'
+            })}
           />
         </label>
+        {errors.username && (
+          <p className="error-message">{errors.username.message}</p>
+        )}
 
         <label htmlFor="password">
           Contraseña
           <input
             id="password"
-            name="password"
             type="password"
-            value={form.password}
-            onChange={handleChange}
-            required
+            {...register('password', {
+              required: 'La contraseña es obligatoria',
+              minLength: {
+                value: 3,
+                message: 'La contraseña debe tener al menos 3 caracteres'
+              }
+            })}
           />
         </label>
+        {errors.password && (
+          <p className="error-message">{errors.password.message}</p>
+        )}
 
         {error && (
           <p className="error-message">
@@ -77,8 +85,8 @@ function LoginPage() {
           </p>
         )}
 
-        <button type="submit" disabled={loading}>
-          {loading ? 'Entrando...' : 'Entrar'}
+        <button type="submit" disabled={loading || isSubmitting}>
+          {loading || isSubmitting ? 'Entrando...' : 'Entrar'}
         </button>
       </form>
 
