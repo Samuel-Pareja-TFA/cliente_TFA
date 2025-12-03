@@ -1,0 +1,97 @@
+.profile-card {
+  background-color: #1e1e1e;
+  border-radius: 8px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+}
+
+.profile-header {
+  margin-bottom: 1rem;
+}
+
+.profile-email,
+.profile-description,
+.profile-date {
+  margin: 0.2rem 0;
+  opacity: 0.9;
+}
+
+.profile-publications h3 {
+  margin-bottom: 0.5rem;
+}
+
+.profile-no-publications {
+  opacity: 0.8;
+}
+
+/* Contenedor de las dos columnas (seguidores / seguidos) */
+.profile-card__stats {
+  display: flex;
+  justify-content: center;
+  gap: 3rem;            
+  margin-top: 0.75rem;
+}
+
+/* Cada columna: número arriba, texto abajo */
+.profile-card__stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Número (0, 12, 34...) */
+.profile-card__stat-number {
+  font-size: 1.2rem;
+  font-weight: 600;
+}
+
+/* Texto "seguidores" / "seguidos" */
+.profile-card__stat-label {
+  font-size: 0.8rem;
+  color: #9ca3af;
+}
+
+
+
+
+
+
+/* -------------------------------- */
+/* Contenedor de las dos columnas (seguidores / seguidos) */
+.profile-card__stats {
+  display: flex;
+  justify-content: center;
+  gap: 3rem;
+  margin-top: 0.75rem;
+}
+
+/* Cada columna: número arriba, texto abajo */
+.profile-card__stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Como es un Link, quitamos decoración por defecto */
+.profile-card__stat--link {
+  text-decoration: none;
+  color: inherit;
+}
+
+/* Número (0, 12, 34...) */
+.profile-card__stat-number {
+  font-size: 1.2rem;
+  font-weight: 600;
+}
+
+/* Texto "seguidores" / "seguidos" */
+.profile-card__stat-label {
+  font-size: 0.8rem;
+  color: #9ca3af;
+}
+
+/* Hover: que se note que es clicable */
+.profile-card__stat--link:hover .profile-card__stat-label {
+  text-decoration: underline;
+  color: #22c55e;
+}
