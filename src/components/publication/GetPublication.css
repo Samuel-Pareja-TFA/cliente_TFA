@@ -42,3 +42,41 @@
   border-radius: 4px;
   cursor: pointer;
 }
+
+
+
+
+/* Likes: corazón + contador */
+.publication-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 0.5rem;
+}
+
+.publication-like-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font-size: 0.9rem;
+  padding: 0.1rem 0.4rem;
+}
+
+.publication-like-button--unliked {
+  color: #e5e7eb; /* gris clarito */
+}
+
+.publication-like-button--liked {
+  color: #22c55e; /* verde que estás usando en todo el proyecto */
+}
+
+.publication-like-heart {
+  font-size: 1rem;
+}
+
+.publication-like-count {
+  font-size: 0.8rem;
+}

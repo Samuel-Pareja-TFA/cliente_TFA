@@ -80,3 +80,41 @@ export async function getFollowingCountRequest(userId, token) {
 
   return page.totalElements ?? 0;
 }
+
+/**
+ * Hace que un usuario (follower) siga a otro usuario (followed).
+ *
+ * Llama a: POST /api/v1/follows/{followerId}/follow/{followedId}
+ *
+ * @param {number} followerId ID del usuario que sigue (usuario logueado)
+ * @param {number} followedId ID del usuario al que se quiere seguir
+ * @param {string} token JWT de acceso del usuario logueado
+ * @returns {Promise<any>} Respuesta de la API (puede ser un DTO o vacío)
+ */
+export function followUserRequest(followerId, followedId, token) {
+  return apiFetch(`/api/v1/follows/${followerId}/follow/${followedId}`, {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  });
+}
+
+/**
+ * Hace que un usuario (follower) deje de seguir a otro usuario (followed).
+ *
+ * Llama a: DELETE /api/v1/follows/{followerId}/follow/{followedId}
+ *
+ * @param {number} followerId ID del usuario que deja de seguir (usuario logueado)
+ * @param {number} followedId ID del usuario al que se deja de seguir
+ * @param {string} token JWT de acceso del usuario logueado
+ * @returns {Promise<any>} Respuesta de la API (puede ser un DTO o vacío)
+ */
+export function unfollowUserRequest(followerId, followedId, token) {
+  return apiFetch(`/api/v1/follows/${followerId}/follow/${followedId}`, {
+    method: 'DELETE',
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  });
+}

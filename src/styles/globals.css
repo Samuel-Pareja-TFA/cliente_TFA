@@ -199,6 +199,19 @@ body {
   cursor: pointer;
 }
 
+/* Estado inicial de las tarjetas que se revelan con scroll */
+.scroll-reveal {
+  opacity: 0;
+  transform: translateY(16px);
+  transition: opacity 0.4s ease-out, transform 0.4s ease-out;
+}
+
+/* Cuando entran en el viewport (clase añadida por el hook) */
+.scroll-reveal.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
 /* Card de perfil */
 .profile-card {
   background-color: #020617;
@@ -380,7 +393,31 @@ body {
 
 
 
+.profile-follow-actions {
+  margin-top: 0.75rem;
+  margin-bottom: 0.75rem;
+}
 
+.profile-follow-button {
+  border-radius: 999px;
+  border: 1px solid #22c55e;
+  padding: 0.35rem 0.9rem;
+  background-color: transparent;
+  color: #22c55e;
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+.profile-follow-button:hover:enabled {
+  background-color: #22c55e;
+  color: #020617;
+}
+
+.profile-follow-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
 
 
 

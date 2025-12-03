@@ -5,7 +5,7 @@ const API_BASE_URL = 'http://localhost:8080';
  *
  * @param {string} path ruta relativa (ej: "/api/v1/publications")
  * @param {RequestInit} [options] opciones de fetch
- * @returns {Promise<any>} cuerpo JSON parseado
+ * @returns {Promise<any>} cuerpo JSON parseado (o texto plano / null según respuesta)
  */
 export async function apiFetch(path, options = {}) {
   const url = `${API_BASE_URL}${path}`;
@@ -26,14 +26,27 @@ export async function apiFetch(path, options = {}) {
     }
   });
 
-  if (!response.ok) {
-    let errorBody;
+  // Leemos el cuerpo UNA sola vez y soportamos JSON o texto plano
+  let rawText = '';
+  let parsedBody = null;
 
+  try {
+    rawText = await response.text();
+  } catch {
+    rawText = '';
+  }
+
+  if (rawText) {
     try {
-      errorBody = await response.json();
+      parsedBody = JSON.parse(rawText);
     } catch {
-      errorBody = { message: response.statusText };
+      // No es JSON válido → nos quedamos con el texto tal cual
+      parsedBody = rawText;
     }
+  }
+
+  if (!response.ok) {
+    const errorBody = parsedBody || { message: response.statusText };
 
     const error = new Error(
       errorBody.detail || errorBody.message || 'Error en la API'
@@ -44,9 +57,11 @@ export async function apiFetch(path, options = {}) {
   }
 
   // 204 No Content → no hay cuerpo
-  if (response.status === 204) {
+  if (response.status === 204 || !rawText) {
     return null;
   }
 
-  return response.json();
+  // Si parsedBody es null pero había texto, devolvemos ese texto,
+  // si era JSON válido, devolvemos el objeto parseado.
+  return parsedBody;
 }

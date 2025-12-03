@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import App from './App.jsx';
 import { AuthProvider } from './context/AuthContext.jsx';
 import './styles/globals.css';
+import SmoothScrollProvider from './components/layout/SmoothScrollProvider.jsx';
 
 /**
  * Instancia única de QueryClient usada por React Query para cachear y
@@ -20,7 +21,9 @@ ReactDOM.createRoot(document.getElementById('root')).render(
     <QueryClientProvider client={queryClient}>
       <BrowserRouter>
         <AuthProvider>
-          <App />
+          <SmoothScrollProvider>
+            <App />
+          </SmoothScrollProvider>  
         </AuthProvider>
       </BrowserRouter>
     </QueryClientProvider>
